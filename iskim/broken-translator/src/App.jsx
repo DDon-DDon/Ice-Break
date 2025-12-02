@@ -1,24 +1,65 @@
+import { useState } from 'react';
+import Header from './components/Header';
+import TranslationInput from './components/TranslationInput';
+import TranslationChain from './components/TranslationChain';
+import ComparisonResult from './components/ComparisonResult';
+import { runTranslationChain } from './services/translationService';
+
 function App() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [translationData, setTranslationData] = useState(null);
+  const [error, setError] = useState(null);
+
+  const handleTranslate = async (text) => {
+    setIsLoading(true);
+    setError(null);
+    setTranslationData(null);
+
+    try {
+      const data = await runTranslationChain(text);
+      setTranslationData(data);
+    } catch (err) {
+      setError(err.message || '번역 중 오류가 발생했습니다.');
+      console.error('Translation error:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-pink-800 to-orange-700 flex items-center justify-center p-4">
-      <div className="text-center">
-        <h1 className="text-6xl font-bold text-white mb-4 animate-pulse">
-          🌐 Broken Translator 🌐
-        </h1>
-        <p className="text-xl text-white/90 mb-8">
-          번역기 전화 놀이 - Where meanings go to die! 😂
-        </p>
-        <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 max-w-2xl">
-          <p className="text-white text-lg">
-            🚧 Under Construction 🚧
-          </p>
-          <p className="text-white/80 mt-2">
-            Tailwind CSS is working perfectly! ✨
-          </p>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-pink-800 to-orange-700 p-4 md:p-8">
+      <div className="max-w-4xl mx-auto">
+        <Header />
+
+        <TranslationInput onTranslate={handleTranslate} isLoading={isLoading} />
+
+        {error && (
+          <div className="mt-6 bg-red-500/20 backdrop-blur-md rounded-xl p-4 border-2 border-red-400">
+            <p className="text-red-200">❌ {error}</p>
+          </div>
+        )}
+
+        {translationData && (
+          <>
+            <TranslationChain
+              results={translationData.results}
+              usedMockData={translationData.usedMockData}
+            />
+            <ComparisonResult
+              originalText={translationData.results[0]?.text}
+              finalText={translationData.results[translationData.results.length - 1]?.text}
+            />
+          </>
+        )}
+
+        {!translationData && !isLoading && (
+          <div className="mt-8 text-center text-white/60">
+            <p className="text-lg">👆 위에 문장을 입력하고 번역을 망쳐보세요!</p>
+          </div>
+        )}
       </div>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
