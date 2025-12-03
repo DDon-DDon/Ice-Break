@@ -1,0 +1,37 @@
+name: Discord Notification - Deploy Success
+
+on:
+    deployment_status:
+
+jobs:
+    notify-success:
+        if: github.event.deployment_status.state == 'success'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Send Discord Success Notification
+              env:
+                  DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+                  DEPLOY_URL: ${{ github.event.deployment_status.target_url }}
+              run: |
+                  curl -H "Content-Type: application/json" \
+                  -X POST \
+                  -d "{
+                    \"content\": \"🚀 **배포 성공!**\",
+                    \"embeds\": [{
+                      \"title\": \"✅ ${{ github.repository }} 배포 완료\",
+                      \"description\": \"Broken Translator가 성공적으로 Vercel에 배포되었습니다!\",
+                      \"url\": \"$DEPLOY_URL\",
+                      \"color\": 5763719,
+                      \"fields\": [
+                        { \"name\": \"Environment\", \"value\": \"${{ github.event.deployment.environment }}\", \"inline\": true },
+                        { \"name\": \"Commit\", \"value\": \"[\`${{ github.event.deployment.sha }}\`](https://github.com/${{ github.repository }}/commit/${{ github.event.deployment.sha }})\", \"inline\": true },
+                        { \"name\": \"Branch\", \"value\": \"${{ github.event.deployment.ref }}\", \"inline\": true },
+                        { \"name\": \"배포 URL\", \"value\": \"[바로 가기]($DEPLOY_URL)\", \"inline\": false }
+                      ],
+                      \"footer\": {
+                        \"text\": \"Vercel Deployment\"
+                      },
+                      \"timestamp\": \"${{ github.event.deployment_status.updated_at }}\"
+                    }]
+                  }" \
+                  $DISCORD_WEBHOOK
