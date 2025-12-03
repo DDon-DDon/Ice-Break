@@ -1,3 +1,5 @@
+import { CheckCircle2, Flame, ArrowRightLeft, Sparkles } from 'lucide-react';
+
 function ComparisonResult({ originalText, finalText }) {
     if (!originalText || !finalText) return null;
 
@@ -5,34 +7,50 @@ function ComparisonResult({ originalText, finalText }) {
     const brokenness = 100 - similarity;
 
     return (
-        <div className="mt-8 bg-gradient-to-r from-purple-900/40 to-pink-900/40 backdrop-blur-md rounded-2xl p-6 md:p-8 border-2 border-purple-400 shadow-2xl">
-            <h2 className="text-3xl font-bold text-white text-center mb-6">
-                📊 얼마나 망가졌을까? (How Broken?)
-            </h2>
+        <div className="mt-10 bg-kahoot-card backdrop-blur-xl rounded-3xl p-8 md:p-10 border-4 border-kahoot-purple/50 shadow-2xl">
+            <div className="text-center mb-8">
+                <div className="flex items-center justify-center gap-3 mb-3">
+                    <ArrowRightLeft className="w-10 h-10 text-kahoot-pink" strokeWidth={3} />
+                    <h2 className="text-4xl md:text-5xl font-black text-white">
+                        얼마나 망가졌을까?
+                    </h2>
+                </div>
+                <p className="text-kahoot-cyan text-lg font-bold">How Broken?</p>
+            </div>
 
-            <div className="grid md:grid-cols-2 gap-6 mb-6">
-                <div className="bg-green-500/20 rounded-xl p-4 border-2 border-green-400">
-                    <h3 className="text-green-300 font-bold mb-2 flex items-center gap-2">
-                        <span>✅</span> 원본 (Original)
+            <div className="grid md:grid-cols-2 gap-6 mb-8">
+                <div className="bg-emerald-500/20 rounded-2xl p-6 border-4 border-emerald-400 shadow-xl">
+                    <h3 className="text-emerald-400 font-black mb-4 flex items-center gap-2 text-xl">
+                        <CheckCircle2 className="w-6 h-6" strokeWidth={3} />
+                        원본 (Original)
                     </h3>
-                    <p className="text-white text-lg">{originalText}</p>
+                    <div className="bg-kahoot-darkPurple/50 rounded-xl p-5 border-2 border-white/10">
+                        <p className="text-white text-lg leading-relaxed font-semibold">{originalText}</p>
+                    </div>
                 </div>
 
-                <div className="bg-red-500/20 rounded-xl p-4 border-2 border-red-400">
-                    <h3 className="text-red-300 font-bold mb-2 flex items-center gap-2">
-                        <span>💥</span> 최종 결과 (Final)
+                <div className="bg-kahoot-orange/20 rounded-2xl p-6 border-4 border-kahoot-orange shadow-xl">
+                    <h3 className="text-kahoot-orange font-black mb-4 flex items-center gap-2 text-xl">
+                        <Sparkles className="w-6 h-6" strokeWidth={3} />
+                        최종 결과 (Final)
                     </h3>
-                    <p className="text-white text-lg">{finalText}</p>
+                    <div className="bg-kahoot-darkPurple/50 rounded-xl p-5 border-2 border-white/10">
+                        <p className="text-white text-lg leading-relaxed font-semibold">{finalText}</p>
+                    </div>
                 </div>
             </div>
 
             <div className="text-center">
-                <div className="inline-block bg-yellow-500/20 backdrop-blur-sm rounded-2xl px-8 py-4 border-2 border-yellow-400">
-                    <p className="text-yellow-200 text-sm mb-2">망가짐 지수 (Brokenness Score)</p>
-                    <p className="text-6xl font-bold text-yellow-300 animate-pulse">
+                <div className="inline-block bg-gradient-to-br from-kahoot-orange/30 to-kahoot-pink/30 backdrop-blur-xl rounded-3xl px-12 py-10 border-4 border-kahoot-pink shadow-2xl">
+                    <div className="flex items-center justify-center gap-3 mb-4">
+                        <Flame className="w-8 h-8 text-kahoot-orange animate-pulse" strokeWidth={3} />
+                        <p className="text-white text-lg font-black tracking-wide uppercase">망가짐 지수</p>
+                        <Flame className="w-8 h-8 text-kahoot-orange animate-pulse" strokeWidth={3} />
+                    </div>
+                    <p className="text-9xl font-black bg-gradient-to-r from-kahoot-orange via-kahoot-pink to-kahoot-cyan bg-clip-text text-transparent drop-shadow-2xl mb-4 animate-pulse">
                         {brokenness.toFixed(0)}%
                     </p>
-                    <p className="text-yellow-200 mt-2">
+                    <p className="text-white text-2xl font-black">
                         {getBrokennessMesage(brokenness)}
                     </p>
                 </div>
@@ -53,11 +71,11 @@ function calculateSimilarity(str1, str2) {
 }
 
 function getBrokennessMesage(score) {
-    if (score >= 90) return '🔥 완벽하게 파괴됨! (Perfectly Destroyed!)';
-    if (score >= 70) return '💥 엄청 망가졌어요! (Super Broken!)';
-    if (score >= 50) return '😵 많이 망가졌네요! (Very Broken!)';
-    if (score >= 30) return '😅 조금 망가졌어요 (Somewhat Broken)';
-    return '🤔 어? 너무 비슷한데? (Hmm, too similar?)';
+    if (score >= 90) return '🔥 완벽하게 파괴됨!';
+    if (score >= 70) return '💥 엄청 망가졌어요!';
+    if (score >= 50) return '😵 많이 망가졌네요!';
+    if (score >= 30) return '😅 조금 망가졌어요';
+    return '🤔 어? 너무 비슷한데?';
 }
 
 export default ComparisonResult;

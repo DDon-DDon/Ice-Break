@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { MessageSquare, Zap, Loader2 } from 'lucide-react';
 
 function TranslationInput({ onTranslate, isLoading }) {
     const [text, setText] = useState('');
@@ -21,53 +22,56 @@ function TranslationInput({ onTranslate, isLoading }) {
     };
 
     return (
-        <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 md:p-8 shadow-2xl">
-            <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="bg-kahoot-card backdrop-blur-xl rounded-3xl p-8 md:p-10 shadow-2xl border-4 border-kahoot-purple/50">
+            <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                    <label htmlFor="input-text" className="block text-white text-lg font-semibold mb-2">
-                        💬 번역할 문장을 입력하세요 (한국어)
+                    <label htmlFor="input-text" className="flex items-center gap-3 text-white text-xl font-bold mb-4">
+                        <MessageSquare className="w-6 h-6 text-kahoot-cyan" strokeWidth={3} />
+                        번역할 문장을 입력하세요
                     </label>
                     <textarea
                         id="input-text"
                         value={text}
                         onChange={(e) => setText(e.target.value)}
                         placeholder="예: 안녕하세요, 저는 개발자입니다."
-                        className="w-full px-4 py-3 bg-white/90 text-gray-800 rounded-lg focus:ring-4 focus:ring-yellow-400 focus:outline-none resize-none"
+                        className="w-full px-6 py-5 bg-kahoot-darkPurple/50 text-white text-lg rounded-2xl focus:ring-4 focus:ring-kahoot-pink focus:outline-none resize-none transition-all duration-300 border-2 border-kahoot-purple/30 placeholder:text-gray-400 font-semibold"
                         rows="4"
                         disabled={isLoading}
                     />
                 </div>
 
-                <div className="flex flex-wrap gap-2">
-                    <p className="w-full text-white/70 text-sm mb-1">빠른 예시:</p>
-                    {exampleTexts.map((example, idx) => (
-                        <button
-                            key={idx}
-                            type="button"
-                            onClick={() => handleExample(example)}
-                            disabled={isLoading}
-                            className="text-xs bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full transition-all disabled:opacity-50"
-                        >
-                            예시 {idx + 1}
-                        </button>
-                    ))}
+                <div className="space-y-3">
+                    <p className="text-gray-300 text-sm font-bold">빠른 예시:</p>
+                    <div className="flex flex-wrap gap-3">
+                        {exampleTexts.map((example, idx) => (
+                            <button
+                                key={idx}
+                                type="button"
+                                onClick={() => handleExample(example)}
+                                disabled={isLoading}
+                                className="text-sm bg-kahoot-purple/50 hover:bg-kahoot-purple text-white px-5 py-2.5 rounded-xl transition-all duration-200 disabled:opacity-50 border-2 border-kahoot-purple font-bold shadow-lg hover:shadow-xl hover:scale-105"
+                            >
+                                예시 {idx + 1}
+                            </button>
+                        ))}
+                    </div>
                 </div>
 
                 <button
                     type="submit"
                     disabled={!text.trim() || isLoading}
-                    className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-gray-900 font-bold text-lg py-4 rounded-xl transition-all transform hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 shadow-lg"
+                    className="w-full bg-gradient-to-r from-kahoot-orange to-kahoot-pink hover:from-kahoot-pink hover:to-kahoot-orange text-white font-black text-xl py-6 rounded-2xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 shadow-2xl border-4 border-white/20 flex items-center justify-center gap-3"
                 >
                     {isLoading ? (
-                        <span className="flex items-center justify-center gap-2">
-                            <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                            </svg>
+                        <>
+                            <Loader2 className="w-6 h-6 animate-spin" strokeWidth={3} />
                             번역 망치는 중...
-                        </span>
+                        </>
                     ) : (
-                        '🔥 번역 망치기 시작! 🔥'
+                        <>
+                            <Zap className="w-6 h-6" strokeWidth={3} />
+                            번역 망치기 시작!
+                        </>
                     )}
                 </button>
             </form>

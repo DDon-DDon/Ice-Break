@@ -27,15 +27,15 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-pink-800 to-orange-700 p-4 md:p-8">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-kahoot-background via-kahoot-darkPurple to-kahoot-background p-4 md:p-8">
+      <div className="max-w-3xl mx-auto">
         <Header />
 
         <TranslationInput onTranslate={handleTranslate} isLoading={isLoading} />
 
         {error && (
-          <div className="mt-6 bg-red-500/20 backdrop-blur-md rounded-xl p-4 border-2 border-red-400">
-            <p className="text-red-200">❌ {error}</p>
+          <div className="mt-6 bg-kahoot-orange/20 backdrop-blur-md rounded-2xl p-5 border-4 border-kahoot-orange shadow-xl">
+            <p className="text-white text-lg font-bold">❌ {error}</p>
           </div>
         )}
 
@@ -53,8 +53,8 @@ function App() {
         )}
 
         {!translationData && !isLoading && (
-          <div className="mt-8 text-center text-white/60">
-            <p className="text-lg">👆 위에 문장을 입력하고 번역을 망쳐보세요!</p>
+          <div className="mt-8 text-center text-kahoot-pink">
+            <p className="text-xl font-bold">👆 위에 문장을 입력하고 번역을 망쳐보세요!</p>
           </div>
         )}
       </div>
