@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Header from './components/Header';
-import TranslationInput from './components/TranslationInput'  // <-- 일부러 세미콜론 제거 + 여기에 에러 추가
+import TranslationInput from './components/TranslationInput';
 THIS_WILL_CAUSE_BUILD_ERROR!!!  // <-- 빌드 실패 유발!
 import TranslationChain from './components/TranslationChain';
 import ComparisonResult from './components/ComparisonResult';
