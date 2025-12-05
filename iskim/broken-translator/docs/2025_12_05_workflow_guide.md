@@ -7,7 +7,7 @@ This document explains the automated workflows configured for this project and h
 
 ## 1. Workflows Overview
 
-We have integrated the CI and Release processes into a single pipeline located at `.github/workflows/ci.yml`.
+We have a single pipeline located at `.github/workflows/ci.yml`.
 
 ### Integrated Pipeline (`ci.yml`)
 - **Triggers**:
@@ -20,37 +20,29 @@ We have integrated the CI and Release processes into a single pipeline located a
       - Runs Linting (`npm run lint`).
       - Builds the project (`npm run build`).
       - Runs Tests (`npm test`).
-  2.  **release**:
-      - **Condition**: Runs ONLY on Push to `main`, ONLY if `lint-and-build` succeeds, and if commit message is not a release commit.
+  2.  **tag-version**:
+      - **Condition**: Runs ONLY on Push to `main` AND if `lint-and-build` succeeds.
       - **Action**:
-          - Calculates next version (standard-version).
-          - Updates `package.json` and `CHANGELOG.md`.
-          - Creates Git Tag.
-          - Pushes changes back to GitHub.
+          - Reads the `version` from `package.json`.
+          - Checks if a Git Tag for that version already exists (e.g., `v0.1.0`).
+          - If the tag does **NOT** exist, it creates the tag and pushes it.
 
 ---
 
-## 2. Versioning Strategy
+## 2. Versioning Strategy (Manual)
 
-We use **Semantic Versioning** (Major.Minor.Patch) automated by `standard-version`.
-The version number is determined by your **Commit Messages**.
+We use **Manual Versioning**. You control the version number directly in `package.json`.
 
-### How to Write Commit Messages
-You must follow the **Conventional Commits** format:
-
-`type(scope): subject`
-
-| Type | Meaning | Version Bump | Example |
-| :--- | :--- | :--- | :--- |
-| **feat** | New feature | **Minor** (0.1.0 -> 0.2.0) | `feat: add japanese translation support` |
-| **fix** | Bug fix | **Patch** (0.1.0 -> 0.1.1) | `fix: correct api key environment variable` |
-| **docs** | Documentation | No bump | `docs: update readme` |
-| **style** | Formatting | No bump | `style: fix indentation` |
-| **refactor** | Code restructuring | No bump | `refactor: simplify translation logic` |
-| **test** | Adding tests | No bump | `test: add unit test for service` |
-| **chore** | Maintenance | No bump | `chore: update dependencies` |
-
-> **Breaking Changes**: If you add `BREAKING CHANGE:` in the footer of the commit message, it triggers a **Major** version bump (0.1.0 -> 1.0.0).
+### How to Release a New Version
+1.  Open `package.json`.
+2.  Update the `"version"` field (e.g., `0.0.1` -> `0.1.0`).
+3.  Commit and Push to `main`.
+    ```bash
+    git add package.json
+    git commit -m "chore: bump version to 0.1.0"
+    git push origin main
+    ```
+4.  **Result**: GitHub Actions will detect the new version number and automatically create a `v0.1.0` tag.
 
 ---
 
@@ -63,44 +55,10 @@ A snippet is configured in `.vscode/broken-translator.code-snippets`.
 
 - **Trigger**: Type `vcom` and press `Tab`.
 - **Output**: `// 0.0.0v |`
-- **Usage**: Update the version number manually if needed (or we can automate this further in the future) and write your comment.
+- **Usage**: Update the version number manually if needed and write your comment.
 
 Example:
 ```javascript
 // 0.1.2v Fixed the API response parsing logic
 const data = response.json();
 ```
-
----
-
-## 4. Version Bump Examples (Current Version: 0.0.0)
-
-Since the current version is `0.0.0`, here is how the next version will be determined based on your **next commit message**:
-
-### Scenario A: First Feature Release (Minor Bump)
-If you want to release the first working version (e.g., `0.1.0`):
-1.  Make your changes.
-2.  Commit with: `feat: initial release of translation features`
-3.  Push to `main`.
-4.  **Result**: Version becomes **0.1.0**.
-
-### Scenario B: Bug Fix (Patch Bump)
-If you just fixed a small bug:
-1.  Make your fix.
-2.  Commit with: `fix: resolve crash on empty input`
-3.  Push to `main`.
-4.  **Result**: Version becomes **0.0.1**.
-
-### Scenario C: Breaking Change (Major Bump)
-If you completely changed the API or architecture:
-1.  Make your changes.
-2.  Commit with:
-    ```text
-    feat: rewrite translation engine
-    
-    BREAKING CHANGE: new api structure
-    ```
-3.  Push to `main`.
-4.  **Result**: Version becomes **1.0.0**.
-
-> **Tip**: You don't need to manually change `package.json`. Just write the correct commit message, and the CI will handle the rest!
