@@ -1,0 +1,10 @@
+{
+    "Versioned Comment": {
+        "scope": "javascript,typescript,javascriptreact,typescriptreact",
+        "prefix": "vcom",
+        "body": [
+            "// ${1:0.0.0}v ${2:comment}"
+        ],
+        "description": "Insert a versioned comment"
+    }
+}

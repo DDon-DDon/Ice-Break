@@ -1,35 +1,79 @@
-name: CI
+name: Broken Translator CI/CD
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
+    paths:
+      - "iskim/broken-translator/**"
   pull_request:
-    branches: [ main ]
+    branches: [main]
+    paths:
+      - "iskim/broken-translator/**"
 
 jobs:
   lint-and-build:
     runs-on: ubuntu-latest
-    
     defaults:
       run:
         working-directory: ./iskim/broken-translator
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'npm'
-          cache-dependency-path: './iskim/broken-translator/package-lock.json'
-      
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: "./iskim/broken-translator/package-lock.json"
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Run ESLint
         run: npm run lint
-      
+
       - name: Build project
         run: npm run build
+
+      - name: Run Tests
+        run: npm test
+
+  release:
+    needs: lint-and-build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'chore(release)')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    defaults:
+      run:
+        working-directory: ./iskim/broken-translator
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: "./iskim/broken-translator/package-lock.json"
+
+      - name: Configure Git User
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create Release
+        run: |
+          npm run release
+          git push --follow-tags origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
