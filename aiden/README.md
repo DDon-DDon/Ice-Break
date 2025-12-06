@@ -11,9 +11,17 @@
 > Because why not?, we just think and make it!
 
 
-[![Download](https://img.shields.io/badge/⬇️_Download-Latest_Release-blue)]() 
-
+## 📦 Download
 일렉트론 기반으로 만든 쓸모없지만 은근 재미있는 네이티브 앱!
+
+[![Download](https://img.shields.io/badge/🪟_Windows-Download-blue?logo=windows)](https://github.com/DDon-DDon/Ice-Break/releases/download/v1.0.1-app/firebox.Setup.1.0.1.exe)
+
+[![Download](https://img.shields.io/badge/macOS-Download-black?logo=apple)](https://github.com/DDon-DDon/Ice-Break/releases/download/v1.0.1-app/firebox-1.0.1-arm64.dmg)
+
+[![Download](https://img.shields.io/badge/Linux-Download-orange?logo=linux)](https://github.com/DDon-DDon/Ice-Break/releases/download/v1.0.1-app/firebox-1.0.1.AppImage)
+
+---
+
 
 **주요 기능:**
 - ⚡ Windows, Mac OS, Linux에서 사용 가능한 애플리케이션!!!
