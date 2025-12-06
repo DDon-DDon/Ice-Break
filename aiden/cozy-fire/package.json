@@ -1,0 +1,30 @@
+{
+  "name": "firebox",
+  "version": "1.0.1",
+  "main": "app/main.js",
+  "build": {
+    "appId": "com.firebox.app",
+    "directories": {
+      "buildResources": "assets"
+    },
+    "files": [
+      "app/**/*"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon-bonfire.ico" 
+    },
+    "icon": "build/icon-bonfire.ico"    
+  },
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder",
+    "build:mac": "electron-builder --mac",
+    "build:win": "electron-builder --win",
+    "build:linux": "electron-builder --linux"
+  },
+  "devDependencies": {
+    "electron": "^39.2.5",
+    "electron-builder": "^26.0.12"
+  }  
+}

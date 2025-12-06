@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>FireBox</title>
+
+  <style>
+    /*
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: black;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+
+    video {
+      width: 100vw;
+      height: 100vh;
+      object-fit: contain;
+      display: block;
+    }
+
+    .temperature-control {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      padding: 15px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: opacity 1s ease; 
+    }
+
+    .temperature-control button {
+      width: 30px;
+      height: 30px;
+      font-size: 18px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: rgba(255, 69, 0, 0.8); 
+      color: rgba(255, 255, 255, 0.9);
+      transition: background-color 0.5s ease, color 0.5s ease;
+    }
+
+    .temperature-display {
+      font-size: 18px;
+      min-width: 30px;
+      text-align: center;
+      transition: color 0.5s ease; 
+    }
+
+    .fade-out {
+      opacity: 0.3;
+    }
+
+    .temperature-alert {
+      margin-top: 8px;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.9);
+      transition: opacity 0.5s ease;
+      opacity: 0;
+    }
+
+    .temperature-alert.show {
+      opacity: 1; 
+    }    
+    */
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: black;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+
+    video {
+      width: 100vw;
+      height: 100vh;
+      object-fit: contain;
+      display: block;
+    }
+
+    .temperature-control {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      padding: 15px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: opacity 1s ease;
+    }
+
+    .temperature-control button {
+      width: 30px;
+      height: 30px;
+      font-size: 18px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: rgba(255, 69, 0, 0.8);
+      color: rgba(255, 255, 255, 0.9);
+      transition: background-color 0.5s ease, color 0.5s ease;
+    }
+
+    .temperature-display {
+      font-size: 18px;
+      min-width: 30px;
+      text-align: center;
+      transition: color 0.5s ease;
+    }
+
+    .fade-out {
+      opacity: 0.3;
+    }
+
+    /* 중앙 안내 메시지 스타일 */
+    .temperature-alert {
+      position: absolute;
+      top: 40%; /* 화면 중심보다 약간 위 */
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 24px;
+      color: rgba(255, 255, 255, 1);
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 15px 25px;
+      border-radius: 10px;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .temperature-alert.show {
+      opacity: 1; 
+    }        
+
+    .temperature-alert.blink {
+      animation: blink 0.5s ease-in-out 3; /* 기본 블링크 */
+      transition: opacity 1s ease;
+      z-index: 100;
+    }
+
+    /* 블링크 애니메이션 */
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+  </style>
+</head>
+
+<body>
+  <video autoplay loop muted playsinline>
+    <source src="./assets/cozy_fire.mp4" type="video/mp4">
+  </video>
+
+  <div class="temperature-control" id="tempControl">
+    <button id="decrease">-</button>
+    <div class="temperature-display" id="temperature"></div>
+    <button id="increase">+</button>
+  </div>
+
+  <!-- 중앙 안내 메시지 -->
+  <div class="temperature-alert" id="tempAlert"></div>
+
+  <script>
+    let temp = 350;
+    let timeOut = 2500;
+    let tUnit = 5;
+
+    const tempDisplay = document.getElementById('temperature');
+    const tempControl = document.getElementById('tempControl');
+    const tempAlert = document.getElementById('tempAlert');
+    let fadeTimer;
+    let alertTimer;
+
+    // 중앙 안내 메시지 함수
+    function checkTemperatureLimits(currentTemp) {      
+      tempAlert.textContent = "";
+      tempAlert.classList.remove('show');
+      tempAlert.classList.remove('blink');         
+      if (currentTemp <= 200) {
+        tempAlert.textContent = "⚠ The temperature is too low!";
+        tempAlert.classList.add('show');
+        tempAlert.classList.add('blink');                 
+      } else if (currentTemp >= 400) {
+        tempAlert.textContent = "⚠ The temperature is too high!";
+        tempAlert.classList.add('show');
+        tempAlert.classList.add('blink');                 
+      }       
+    }    
+
+    tempDisplay.textContent = temp + '°F';
+    function startFadeTimer() {
+      fadeTimer = setTimeout(() => {
+        tempControl.classList.add('fade-out');
+      }, timeOut);
+    }
+
+    function resetFadeTimer() {
+      tempControl.classList.remove('fade-out');
+      clearTimeout(fadeTimer);
+      startFadeTimer();
+    }
+
+    document.getElementById('increase').addEventListener('click', () => {
+      temp += tUnit;
+      tempDisplay.textContent = temp + '°F';
+      resetFadeTimer();
+      checkTemperatureLimits(temp);
+    });
+
+    document.getElementById('decrease').addEventListener('click', () => {
+      if(-459 < temp - tUnit){
+        temp -= tUnit;
+      }
+      tempDisplay.textContent = temp + '°F';
+      resetFadeTimer();
+      checkTemperatureLimits(temp);
+    });
+
+    startFadeTimer();
+
+    // 초기 체크
+    // checkTemperatureLimits(temp);
+
+    tempDisplay.addEventListener("mouseover", ()=> {
+      resetFadeTimer();
+    }, false);
+    
+  </script>
+</body>
+<!-- 
+<body>
+  <video autoplay loop muted playsinline>
+    <source src="./assets/cozy_fire.mp4" type="video/mp4">
+  </video>
+
+  <div class="temperature-control" id="tempControl">
+    <button id="decrease">-</button>
+    <div class="temperature-display" id="temperature"></div>
+    <button id="increase">+</button>
+    <div class="temperature-alert" id="tempAlert"></div>
+  </div>
+
+  <script>
+    let temp = 350; // 기본 온도
+    let timeOut = 3000; // 타임 아웃 시간
+    let vUnit = 5;
+    const tempDisplay = document.getElementById('temperature');
+
+    tempDisplay.textContent = temp + '°F';
+
+    document.getElementById('increase').addEventListener('click', () => {
+      temp += vUnit;
+      tempDisplay.textContent = temp + '°F';
+      checkTemperatureLimits(temp); // 온도 확인      
+      resetFadeTimer(); // 버튼 클릭 시 fade 타이머 리셋
+    });
+
+    document.getElementById('decrease').addEventListener('click', () => {
+      if(-459 < temp - vUnit){
+        temp -= vUnit;
+      }
+      tempDisplay.textContent = temp + '°F';
+      checkTemperatureLimits(temp); // 온도 확인      
+      resetFadeTimer(); // 버튼 클릭 시 fade 타이머 리셋
+    });
+
+    const tempControl = document.getElementById('tempControl');
+    let fadeTimer;
+
+    function startFadeTimer() {
+      fadeTimer = setTimeout(() => {
+        tempControl.classList.add('fade-out'); // 일정 시간 후 반투명 적용
+      }, timeOut); // 3초 후 반투명 (원하는 시간 변경 가능)
+    }
+
+    function resetFadeTimer() {
+      tempControl.classList.remove('fade-out'); // 반투명 제거
+      clearTimeout(fadeTimer);
+      startFadeTimer();
+    }
+
+    startFadeTimer(); // 초기 타이머 시작
+    tempDisplay.addEventListener("mouseover", ()=> {
+      resetFadeTimer();
+    }, false);
+
+    const tempAlert = document.getElementById('tempAlert');
+
+    // 특정 온도 범위를 벗어나면 안내 문구 표시
+    function checkTemperatureLimits(currentTemp) {
+      if (currentTemp <= 200) {
+        tempAlert.textContent = "⚠ 온도가 너무 낮아요!";
+        tempAlert.classList.add('show');
+      } else if (currentTemp >= 400) {
+        tempAlert.textContent = "⚠ 온도가 너무 높아요!";
+        tempAlert.classList.add('show');
+      } else {
+        tempAlert.textContent = "";
+        tempAlert.classList.remove('show');
+      }
+    }
+    checkTemperatureLimits(temp); // 온도 확인
+    
+  </script>
+</body>
+-->
+</html>
+
+
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>FireBox</title>
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: black;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    video {
+      width: 100vw;
+      height: 100vh;
+      object-fit: contain;
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <video autoplay loop muted playsinline>
+    <source src="./assets/cozy_fire.mp4" type="video/mp4">
+  </video>
+</body>
+</html>
+-->
+<!-- TODO 벽난로에 버튼 추가해서 온도 조절 기능! -->
