@@ -1,1 +1,12 @@
-[{"date":"Sat, 06 Dec 2025 15:26:30 GMT","total":{"sloc":0,"maintainability":0},"average":{"sloc":0,"maintainability":"NaN"}}]
+[
+  {
+    "date": "Sat, 06 Dec 2025 15:26:30 GMT",
+    "total": { "sloc": 0, "maintainability": 0 },
+    "average": { "sloc": 0, "maintainability": "NaN" }
+  },
+  {
+    "date": "Sun, 07 Dec 2025 06:36:51 GMT",
+    "total": { "sloc": 0, "maintainability": 0 },
+    "average": { "sloc": 0, "maintainability": "NaN" }
+  }
+]
