@@ -1,0 +1,18 @@
+{
+    "pattern": "src/**/*.{js,jsx}",
+    "ignore": [
+        "**/node_modules/**",
+        "**/*.test.*",
+        "**/dist/**"
+    ],
+    "reporters": [
+        "html",
+        "console"
+    ],
+    "output": "./docs/analysis/duplication",
+    "minLines": 5,
+    "minTokens": 50,
+    "threshold": 0.1,
+    "format": "javascript,jsx",
+    "absolute": true
+}

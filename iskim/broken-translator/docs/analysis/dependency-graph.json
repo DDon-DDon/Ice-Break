@@ -1,0 +1,19 @@
+{
+  "App.jsx": [
+    "components/ComparisonResult.jsx",
+    "components/Header.jsx",
+    "components/TranslationChain.jsx",
+    "components/TranslationInput.jsx",
+    "services/translationService.js"
+  ],
+  "components/ComparisonResult.jsx": [],
+  "components/Header.jsx": [],
+  "components/TranslationChain.jsx": [],
+  "components/TranslationInput.jsx": [],
+  "index.css": [],
+  "main.jsx": [
+    "App.jsx",
+    "index.css"
+  ],
+  "services/translationService.js": []
+}

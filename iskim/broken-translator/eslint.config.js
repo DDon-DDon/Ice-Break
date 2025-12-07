@@ -24,6 +24,10 @@ export default defineConfig([
     },
     rules: {
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      // 코드 복잡도 분석 규칙
+      'complexity': ['warn', { max: 10 }],
+      'max-depth': ['warn', { max: 4 }],
+      'max-lines-per-function': ['warn', { max: 50, skipBlankLines: true, skipComments: true }],
     },
   },
 ])
